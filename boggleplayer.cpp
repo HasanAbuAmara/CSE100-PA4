@@ -3,14 +3,19 @@
 #include "boggleplayer.h"
 #include "boggleutil.h"
 
-   BogglePlayer::BogglePlayer() : boardGraph( 0 ), boardSet( false ) {}
+   BogglePlayer::BogglePlayer() : boardGraph( 0 ), boardSet( false ),
+   lexicon( 0 ), lexiconMade( false ) {}
 
    BogglePlayer::~BogglePlayer()
    {
       delete boardGraph;
+      delete lexicon;
    }
 
 void BogglePlayer::buildLexicon(const set<string>& word_list){
+   lexicon = new Lexicon();
+   lexicon->build( word_list );
+   lexiconMade = true;
 }
 
 void BogglePlayer::setBoard(unsigned int rows, unsigned int cols, string** diceArray) {
@@ -24,7 +29,7 @@ bool BogglePlayer::getAllValidWords(unsigned int minimum_word_length, set<string
 }
 
 bool BogglePlayer::isInLexicon(const string& word_to_check) {
-        return true;
+        return lexiconMade && lexicon->findWord( word_to_check );
 }
 
 bool BogglePlayer::isOnBoardHelper( vector<int>& pos, BoardNode* node, string& word )
@@ -43,13 +48,19 @@ bool BogglePlayer::isOnBoardHelper( vector<int>& pos, BoardNode* node, string& w
       vector<BoardNode*>::iterator it = node->adjList->begin();
       vector<BoardNode*>::iterator en = node->adjList->end();
       
+      string newWord = word.substr( node->diceStr.length(),
+                                    word.length() - node->diceStr.length() );
+
       for( ; it != en; ++it )
       {
-         if( !((*it)->wasVisited) && word.find( (*it)->diceStr ) == 0 )
+         if( couldBuildStr )
+         {
+            break;
+         }
+         if( !((*it)->wasVisited) && word.find( newWord ) == 0 )
          {
             couldBuildStr = couldBuildStr || isOnBoardHelper( pos, *it,
-                           word.substr( node->diceStr.length(), word.length()-
-                                        node->diceStr.length() ) );
+                                                              newWord );
          }
       }
 
@@ -70,13 +81,20 @@ vector<int> BogglePlayer::isOnBoard(const string& word) {
          result.clear();
          vector<BoardNode*>::iterator it = boardGraph->boardNodes->begin();
          vector<BoardNode*>::iterator en = boardGraph->boardNodes->end();
+         bool foundString = false;
+
          for( ; it != en; ++it )
          {
+            if( foundString )
+            {
+               break;
+            }
             if( word.find( (*it)->diceStr ) == 0 )
             {
-                isOnBoardHelper( result, *it, word );
+                foundString = isOnBoardHelper( result, *it, word );
             }
          }
+
          return result;
 }
 

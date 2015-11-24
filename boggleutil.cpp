@@ -26,6 +26,10 @@ using namespace std;
 
    BoardGraph::~BoardGraph()
    {
+      for( int i = 0; i < boardNodes->size(); i++ )
+      {
+         delete boardNodes->at( i );
+      }
       delete boardNodes;
    }
 
@@ -116,6 +120,10 @@ using namespace std;
 
    Lexicon::~Lexicon()
    {
+      for( int i = 0; i < hashTable->size(); i++ )
+      {
+         delete hashTable->at( i );
+      }
       delete hashTable;
    }
 
@@ -154,6 +162,7 @@ using namespace std;
             hashTable->at( index ) = new vector<string>();
          }
          hashTable->at( index )->push_back( *it );
+         size++;
       }
    }
 
