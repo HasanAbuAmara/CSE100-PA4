@@ -7,6 +7,7 @@
 using namespace std;
 
 class BogglePlayer : public BaseBogglePlayer {
+  
   public:
   void buildLexicon(const set<string>& word_list);
   
@@ -20,17 +21,20 @@ class BogglePlayer : public BaseBogglePlayer {
 
   void getCustomBoard(string** &new_board, unsigned int *rows, unsigned int *cols);
 
-  BogglePlayer() {
-  }
+  BogglePlayer(): boardGraph( 0 ), boardSet( false ), lexicon( 0 ),
+  lexiconMade( false ) {}
   
   ~BogglePlayer() {
+     delete boardGraph;
+     delete lexicon;
   }
 
   private:
      BoardGraph* boardGraph;
      bool boardSet;
-
-     bool isOnBoardHelper( vector<int>& pos, BoardNode* node, string& word );
+     Lexicon* lexicon;
+     bool lexiconMade;
+     bool isOnBoardHelper( vector<int>& pos, BoardNode* node, const string& word );
 };
 
 #endif

@@ -2,15 +2,8 @@
 
 #include "boggleplayer.h"
 #include "boggleutil.h"
-
-   BogglePlayer::BogglePlayer() : boardGraph( 0 ), boardSet( false ),
-   lexicon( 0 ), lexiconMade( false ) {}
-
-   BogglePlayer::~BogglePlayer()
-   {
-      delete boardGraph;
-      delete lexicon;
-   }
+#include <algorithm>
+#include <iostream>
 
 void BogglePlayer::buildLexicon(const set<string>& word_list){
    lexicon = new Lexicon();
@@ -25,15 +18,31 @@ void BogglePlayer::setBoard(unsigned int rows, unsigned int cols, string** diceA
 }
 
 bool BogglePlayer::getAllValidWords(unsigned int minimum_word_length, set<string>* words) {
-        return true;
+   if( !boardSet || !lexiconMade )
+   {
+      return false;
+   }
+
+   vector<string> minWords = lexicon->getValidWords( minimum_word_length );
+
+   for( unsigned int i = 0; i < minWords.size(); i++ )
+   {
+      if( ( isOnBoard( minWords.at( i ) ) ).size() )
+      {
+         words->insert( minWords.at( i ) );
+      }
+   }
+
+   return true;
 }
 
 bool BogglePlayer::isInLexicon(const string& word_to_check) {
         return lexiconMade && lexicon->findWord( word_to_check );
 }
 
-bool BogglePlayer::isOnBoardHelper( vector<int>& pos, BoardNode* node, string& word )
+bool BogglePlayer::isOnBoardHelper( vector<int>& pos, BoardNode* node, const string& word )
 {
+   std::cout << "Word is " << word << std::endl;
    if( node->diceStr == word )
    {
       pos.push_back( node->index );
@@ -57,14 +66,13 @@ bool BogglePlayer::isOnBoardHelper( vector<int>& pos, BoardNode* node, string& w
          {
             break;
          }
-         if( !((*it)->wasVisited) && word.find( newWord ) == 0 )
+         if( !((*it)->wasVisited) && newWord.find( (*it)->diceStr ) == 0 )
          {
-            couldBuildStr = couldBuildStr || isOnBoardHelper( pos, *it,
-                                                              newWord );
+            couldBuildStr = isOnBoardHelper( pos, *it, newWord );
          }
       }
 
-      if( ! couldBuildStr )
+      if( !couldBuildStr )
       {
          pos.pop_back();
       }
@@ -77,8 +85,15 @@ bool BogglePlayer::isOnBoardHelper( vector<int>& pos, BoardNode* node, string& w
 
 
 vector<int> BogglePlayer::isOnBoard(const string& word) {
+         string str = word;
+         transform( str.begin(), str.end(), str.begin(), ::tolower );
          vector<int> result;
          result.clear();
+         if( !boardSet )
+         {
+            return result;
+         }
+
          vector<BoardNode*>::iterator it = boardGraph->boardNodes->begin();
          vector<BoardNode*>::iterator en = boardGraph->boardNodes->end();
          bool foundString = false;
@@ -89,9 +104,9 @@ vector<int> BogglePlayer::isOnBoard(const string& word) {
             {
                break;
             }
-            if( word.find( (*it)->diceStr ) == 0 )
+            if( str.find( (*it)->diceStr ) == 0 )
             {
-                foundString = isOnBoardHelper( result, *it, word );
+                foundString = isOnBoardHelper( result, *it, str );
             }
          }
 
@@ -100,5 +115,7 @@ vector<int> BogglePlayer::isOnBoard(const string& word) {
 
 
 void BogglePlayer::getCustomBoard(string** &new_board, unsigned int *rows, unsigned int *cols) {
+   delete boardGraph;
+   setBoard( *rows, *cols, new_board );
 }
 

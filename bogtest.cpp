@@ -17,6 +17,9 @@ int main (int argc, char* argv[]) {
   string wordX("x");
   lex.insert(wordA);
   lex.insert("z");
+  lex.insert("cad");
+  lex.insert("bad");
+  lex.insert("dab");
   string row0[] = {"D","C"};
   string row1[] = {"b","A"};
   string* board[] = {row0,row1};
@@ -52,12 +55,15 @@ int main (int argc, char* argv[]) {
   if(!p->getAllValidWords(0,&words)) {
     std::cerr << "Apparent problem with getAllValidWords #1." << std::endl;
     return -1;
-  };
-  if(words.size() != 1 || words.count(wordA) != 1) {
+  }
+  std::cout << words.size() << std::endl;
+  std::cout << words.count(wordA) << std::endl;
+  if(words.size() != 4 || words.count(wordA) != 1) {
     std::cerr << "Apparent problem with getAllValidWords #2." << std::endl;
     return -1;
   }
 
+  std::cout << "Finished. Do test more things, though." << std::endl;
   delete p;
   return 0;
 

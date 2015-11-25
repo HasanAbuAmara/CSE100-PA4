@@ -33,19 +33,21 @@ using namespace std;
       delete boardNodes;
    }
 
-   void BoardGraph::buildGraph( int width, int height, string** board )
+   void BoardGraph::buildGraph( const int width, const int height, string** board )
    {
-      BoardNode* nodes[height][width];
+      BoardNode*** nodes = new BoardNode**[height];
+      for( int i = 0; i < height; i++ )
+      {
+         nodes[i] = new BoardNode*[width];
+      }
 
       for( int row = 0; row < height; row++ )
       {
          for( int col = 0; col < width; col++ )
          {
-            nodes[row][col] = new BoardNode( transform(board[row][col].begin(),
-                                                       board[row][col].end(),
-                                                       board[row][col].begin(),
-                                                       ::tolower ), 
-                                             row*width + col );
+            string str = board[row][col];
+            transform( str.begin(), str.end(), str.begin(), ::tolower );
+            nodes[row][col] = new BoardNode( str, row*width + col );
          }
       }
 
@@ -95,6 +97,13 @@ using namespace std;
             boardNodes->push_back( nodes[row][col] );
          }
       }
+
+      for( int i = 0; i < height; i++ )
+      {
+         delete [ ] nodes[i];
+      }
+
+      delete [ ] nodes;
    }
 
    vector<BoardNode*>* BoardGraph::getNodesWithLetter( string& letter )
@@ -127,7 +136,7 @@ using namespace std;
       delete hashTable;
    }
 
-   int hash( const string& word )
+   int Lexicon::hash( const string& word )
    {
       long hashVal = 0;
       
@@ -148,7 +157,7 @@ using namespace std;
    void Lexicon::build( const set<string>& wordList )
    {
       size = wordList.size();
-      capacity = (int) ( 1.3 * size );
+      capacity = (int) ( 1.3 * wordList.size() );
       hashTable = new vector<vector<string>* >( capacity, (vector<string>*) 0 );
       
       set<string>::iterator it = wordList.begin();
@@ -162,7 +171,6 @@ using namespace std;
             hashTable->at( index ) = new vector<string>();
          }
          hashTable->at( index )->push_back( *it );
-         size++;
       }
    }
 

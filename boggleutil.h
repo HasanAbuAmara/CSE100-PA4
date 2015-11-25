@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <set>
 
 using namespace std;
 //Data structures for lexicon and board should reside in this file.
@@ -36,7 +37,6 @@ class BoardGraph
 
    private:
       vector<BoardNode*>* boardNodes;
-      //map<string, BoardNode*>* boardNodeOrganizer;
 
    public:
       BoardGraph();
@@ -45,7 +45,7 @@ class BoardGraph
 
       vector<BoardNode*>* getNodesWithLetter( string& letter );
 
-      void buildGraph( int width, int height, string** board );
+      void buildGraph( const int width, const int height, string** board );
 
 };
 
