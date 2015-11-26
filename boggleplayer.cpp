@@ -3,7 +3,6 @@
 #include "boggleplayer.h"
 #include "boggleutil.h"
 #include <algorithm>
-#include <iostream>
 
 void BogglePlayer::buildLexicon(const set<string>& word_list){
    lexicon = new Lexicon();
@@ -42,7 +41,6 @@ bool BogglePlayer::isInLexicon(const string& word_to_check) {
 
 bool BogglePlayer::isOnBoardHelper( vector<int>& pos, BoardNode* node, const string& word )
 {
-   std::cout << "Word is " << word << std::endl;
    if( node->diceStr == word )
    {
       pos.push_back( node->index );
