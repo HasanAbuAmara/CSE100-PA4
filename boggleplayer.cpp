@@ -11,6 +11,7 @@ void BogglePlayer::buildLexicon(const set<string>& word_list){
 }
 
 void BogglePlayer::setBoard(unsigned int rows, unsigned int cols, string** diceArray) {
+   delete boardGraph;
    boardGraph = new BoardGraph();
    boardGraph->buildGraph( cols, rows, diceArray );
    boardSet = true;
