@@ -5,6 +5,7 @@
 #include <algorithm>
 
 void BogglePlayer::buildLexicon(const set<string>& word_list){
+   delete lexicon;
    lexicon = new Lexicon();
    lexicon->build( word_list );
    lexiconMade = true;

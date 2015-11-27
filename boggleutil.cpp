@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <vector>
-#include <map>
 #include <string>
 #include"boggleutil.h"
 
@@ -26,7 +25,7 @@ using namespace std;
 
    BoardGraph::~BoardGraph()
    {
-      for( int i = 0; i < boardNodes->size(); i++ )
+      for( unsigned int i = 0; i < boardNodes->size(); i++ )
       {
          delete boardNodes->at( i );
       }
@@ -106,30 +105,12 @@ using namespace std;
       delete [ ] nodes;
    }
 
-   vector<BoardNode*>* BoardGraph::getNodesWithLetter( string& letter )
-   {
-      vector<BoardNode*>* nodes = new vector<BoardNode*>();
-
-      vector<BoardNode*>::iterator it = boardNodes->begin();
-      vector<BoardNode*>::iterator en = boardNodes->end();
-
-      for( ; it != en; ++it )
-      {
-         if( (*it)->diceStr.find( letter ) == 0 )
-         {
-            nodes->push_back( *it );
-         }
-      }
-
-      return nodes;
-   }
-
    Lexicon::Lexicon() : size( 0 ), capacity( 0 ), hashTable( 0 )
    {}
 
    Lexicon::~Lexicon()
    {
-      for( int i = 0; i < hashTable->size(); i++ )
+      for( unsigned int i = 0; i < hashTable->size(); i++ )
       {
          delete hashTable->at( i );
       }
@@ -140,7 +121,7 @@ using namespace std;
    {
       long hashVal = 0;
       
-      for( int i = 0; i < word.length(); i++ )
+      for( unsigned int i = 0; i < word.length(); i++ )
       {
          hashVal = ( hashVal << 4 ) + word.at( i );
          long g = hashVal & 0xF0000000L;
@@ -218,7 +199,7 @@ using namespace std;
       {
          if( *it )
          {
-            for( int i = 0; i < (*it)->size(); i++ )
+            for( unsigned int i = 0; i < (*it)->size(); i++ )
             {
                if( (*it)->at( i ).length() >= minLength )
                {

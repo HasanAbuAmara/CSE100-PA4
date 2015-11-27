@@ -43,8 +43,6 @@ class BoardGraph
 
       ~BoardGraph();
 
-      vector<BoardNode*>* getNodesWithLetter( string& letter );
-
       void buildGraph( const int width, const int height, string** board );
 
 };
